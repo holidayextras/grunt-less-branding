@@ -37,7 +37,7 @@ module.exports = function(grunt) {
   };
 
 
-  grunt.registerMultiTask('less_module_branding', 'Process brand module less', function() {
+  grunt.registerMultiTask('lessBranding', 'Process branded LESS', function() {
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
       brands: []
