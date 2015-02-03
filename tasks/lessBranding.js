@@ -41,6 +41,7 @@ module.exports = function(grunt) {
     var pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
     var brands = [];
+    var options = this.options;
     if(options.brand) brands.push(options.brand);
     brands.push('');  //run default brand too
     grunt.log.debug('Using brands: ', brands.join("\n  "));
