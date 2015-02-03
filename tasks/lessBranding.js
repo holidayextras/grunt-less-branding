@@ -104,8 +104,6 @@ module.exports = function(grunt) {
     grunt.log.debug(tempLess.join("\n"));
 
     less.render(tempLess.join("\n"), options.lessOptions).then(function(output){
-      grunt.log.debug('CSS output:');
-      grunt.log.debug(output.css);
       var brandFile = options.brand || 'main';
       var out = path.join(options.outputPath, brandFile + '.css');
       grunt.file.write(out, output.css);
