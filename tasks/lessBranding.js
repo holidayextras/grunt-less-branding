@@ -20,7 +20,7 @@ module.exports = function(grunt) {
   var _findLess = function(brands, base, name){
     var found = [];
     brands.every(function(brand){
-      var lessPath = path.join(base, 'assets', 'style', brand, 'main.less');
+      var lessPath = path.join(base, brand, 'main.less');
       if(fs.existsSync(lessPath)){
         grunt.log.debug('Found:', lessPath);
         if(name){
@@ -43,19 +43,20 @@ module.exports = function(grunt) {
     var brands = [];
     var options = this.options();
     if(options.brand) brands.push(options.brand);
+    if(!options.base) options.base = path.join('src', 'style');
     brands.push('');  //run default brand too
     grunt.log.debug('Using brands: ', brands.join("\n  "));
 
     var moduleImports = [];
 
     Object.keys(pkg.dependencies).forEach(function(moduleName){
-      var base = path.join('node_modules', moduleName);
+      var base = path.join('node_modules', moduleName, options.base);
       grunt.log.debug('Searching in:', base);
       moduleImports = moduleImports.concat(_findLess(brands, base, moduleName));
     });
 
     grunt.log.debug('Adding app specific LESS');
-    moduleImports = moduleImports.concat(_findLess(brands, ''));
+    moduleImports = moduleImports.concat(_findLess(brands, options.base));
 
     var lessOptions = {
       //FIXME does nothing in render's grunt-contrib-less strictImports: true,

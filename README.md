@@ -8,7 +8,7 @@ This plugin requires Grunt `~0.4.5`
 If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
 ```shell
-npm install grunt-less-branding --save-dev
+npm install grunt-less-branding --save
 ```
 
 Once the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript:
@@ -37,17 +37,23 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
+#### options.brand
 Type: `String`
 Default value: `',  '`
 
-A string value that is used to do something with whatever.
+A string value that is used to specify the brand to create CSS for.
 
-#### options.punctuation
+#### options.base
 Type: `String`
-Default value: `'.'`
+Default value: `'src/style'`
 
-A string value that is used to do something else with whatever else.
+A string value that is used to determine where to look for LESS files.
+
+#### options.outputPath
+Type: `String`
+Default value: `''`
+
+A string value that is used to determine where to write the processed CSS file.
 
 ### Usage Examples
 
@@ -57,10 +63,10 @@ In this example, the default options are used to do something with whatever. So 
 ```js
 grunt.initConfig({
   lessBranding: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
+    options: {
+      outputPath: 'www'
     },
+    files: []
   },
 });
 ```
@@ -72,18 +78,10 @@ In this example, custom options are used to do something else with whatever else
 grunt.initConfig({
   lessBranding: {
     options: {
-      separator: ': ',
-      punctuation: ' !!!',
+      brand: 'brand_a',
+      base: 'assets/style',
     },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+    files: [],
   },
 });
 ```
-
-## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
-
-## Release History
-_(Nothing yet)_
