@@ -55,6 +55,12 @@ Default value: `''`
 
 A string value that is used to determine where to write the processed CSS file.
 
+#### options.searchPrefix
+Type: `String`
+Default value: `'^app\-module\-'`
+
+A string value that is used to determine which npm dependencies are searched.
+
 ### Usage Examples
 
 #### Default Options

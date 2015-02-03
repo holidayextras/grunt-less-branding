@@ -41,15 +41,23 @@ module.exports = function(grunt) {
     var pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
     var brands = [];
-    var options = this.options();
+    var options = this.options({
+      base: path.join('src', 'style'),
+      searchPrefix: '^app\-module\-'
+    });
     if(options.brand) brands.push(options.brand);
-    if(!options.base) options.base = path.join('src', 'style');
     brands.push('');  //run default brand too
     grunt.log.debug('Using brands: ', brands.join("\n  "));
+    var searchPrefix = new RegExp(options.searchPrefix);
 
     var moduleImports = [];
 
-    Object.keys(pkg.dependencies).forEach(function(moduleName){
+    //only look in our apps shared modules
+    var appDependencies = Object.keys(pkg.dependencies).filter(function(dep){
+      return searchPrefix.test(dep);
+    });
+
+    appDependencies.forEach(function(moduleName){
       var base = path.join('node_modules', moduleName, options.base);
       grunt.log.debug('Searching in:', base);
       moduleImports = moduleImports.concat(_findLess(brands, base, moduleName));
