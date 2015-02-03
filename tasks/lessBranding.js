@@ -41,7 +41,7 @@ module.exports = function(grunt) {
     var pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
     var brands = [];
-    var options = this.options;
+    var options = this.options();
     if(options.brand) brands.push(options.brand);
     brands.push('');  //run default brand too
     grunt.log.debug('Using brands: ', brands.join("\n  "));
@@ -69,7 +69,7 @@ module.exports = function(grunt) {
       grunt.log.debug('CSS output:');
       grunt.log.debug(output.css);
       var brandFile = options.brand || 'main';
-      var out = path.join('www', brandFile + '.css');
+      var out = path.join(options.outputPath, brandFile + '.css');
       grunt.file.write(out, output.css);
       grunt.log.writeln('File "' + out + '" created.');
     },
