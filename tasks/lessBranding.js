@@ -36,10 +36,29 @@ module.exports = function(grunt) {
     return found;
   };
 
+  var _searchDependencies = function(brands, searchPrefix, searchDir, beginning){
+    var currentJson = path.join(beginning, 'package.json');
+    var pkg = grunt.file.readJSON(currentJson, {
+      encoding: 'UTF8'
+    });
+    //only look in our apps shared modules
+    var appDependencies = Object.keys(pkg.dependencies).filter(function(dep){
+      return searchPrefix.test(dep);
+    });
+    var importsFound = [];
+    appDependencies.forEach(function(moduleName){
+      var base = path.join(beginning, 'node_modules', moduleName)
+      var whereToSearch = path.join(base, searchDir);
+      grunt.log.debug('Searching in:', whereToSearch);
+      importsFound = importsFound.concat(_findLess(brands, whereToSearch, moduleName));
+      if(grunt.file.exists(base, 'package.json')){  //recurse
+        importsFound = importsFound.concat(_searchDependencies(brands, searchPrefix, searchDir, base));
+      }
+    });
+    return importsFound;
+  };
 
-  grunt.registerMultiTask('lessBranding', 'Process branded LESS', function() {
-    var pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-
+  grunt.registerMultiTask('lessBranding', 'Process branded LESS', function(){
     var brands = [];
     var options = this.options({
       base: path.join('src', 'style'),
@@ -50,18 +69,8 @@ module.exports = function(grunt) {
     grunt.log.debug('Using brands: ', brands.join("\n  "));
     var searchPrefix = new RegExp(options.searchPrefix);
 
-    var moduleImports = [];
-
-    //only look in our apps shared modules
-    var appDependencies = Object.keys(pkg.dependencies).filter(function(dep){
-      return searchPrefix.test(dep);
-    });
-
-    appDependencies.forEach(function(moduleName){
-      var base = path.join('node_modules', moduleName, options.base);
-      grunt.log.debug('Searching in:', base);
-      moduleImports = moduleImports.concat(_findLess(brands, base, moduleName));
-    });
+    var moduleImports = _searchDependencies(brands, searchPrefix, options.base, '');
+    console.log('all imports: ', moduleImports);
 
     grunt.log.debug('Adding app specific LESS');
     moduleImports = moduleImports.concat(_findLess(brands, options.base));
