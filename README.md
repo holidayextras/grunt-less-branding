@@ -59,7 +59,21 @@ A string value that is used to determine where to write the processed CSS file.
 Type: `String`
 Default value: `'^app\-module\-'`
 
-A string value that is used to determine which npm dependencies are searched.
+A string value regular expression that is used to determine which npm dependencies are searched.
+
+#### options.lessOptions
+Type: `Object`
+Default value:
+
+```js
+{
+  syncImport: true,
+  compress: true,
+  ieCompat: true
+}
+```
+
+An object of options to pass to less, see the [less docs](http://lesscss.org/usage/#command-line-usage-options) for more info.
 
 ### Usage Examples
 
