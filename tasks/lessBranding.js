@@ -43,7 +43,6 @@ module.exports = function(grunt) {
     appDependencies.forEach(function(moduleName){
       var base = path.join(beginning, 'node_modules', moduleName)
       var whereToSearch = path.join(base, searchDir);
-      grunt.log.debug('Searching in:', whereToSearch);
       importsFound[moduleName] = {};
       importsFound[moduleName].files = _findLess(brands, whereToSearch, moduleName);
       if(grunt.file.exists(base, 'package.json')){  //recurse
@@ -79,12 +78,11 @@ module.exports = function(grunt) {
     var options = this.options({
       base: path.join('src', 'style'),
       searchPrefix: '^app\-module\-',
-      lessOptions: {
-        syncImport: true,
-        //TODO customFunctions: helpers.customLessFunc,
-        compress: true,
-        ieCompat: true
-      }
+      lessOptions: {},
+      featurePatterns: [
+        'src/*',
+        '!src/style'
+      ]
     });
     if(options.brand) brands.push(options.brand);
     brands.push('');  //run default brand too
@@ -92,8 +90,21 @@ module.exports = function(grunt) {
     var searchPrefix = new RegExp(options.searchPrefix);
 
     var moduleImports = {};
+    grunt.log.debug('Searching node modules...');
     moduleImports.deps = _searchDependencies(brands, searchPrefix, options.base, '');
-    grunt.log.debug('Adding app specific LESS');
+
+    grunt.log.debug('Searching app features...');
+    var features = grunt.file.expand({
+      filter: 'isDirectory'
+    }, options.featurePatterns);
+    features.every(function(featureDir){
+      var feature = path.basename(featureDir);
+      var featureBase = path.join(featureDir, 'style');
+      moduleImports.deps[feature] = {};
+      moduleImports.deps[feature].files = _findLess(brands, featureBase, featureDir);
+    });
+
+    grunt.log.debug('Searching app global...');
     moduleImports.files = _findLess(brands, options.base, '');
 
     grunt.log.debug('All imports: ');
