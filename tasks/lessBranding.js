@@ -76,12 +76,12 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('lessBranding', 'Process branded LESS', function(){
     var brands = [];
     var options = this.options({
-      base: path.join('src', 'style'),
+      base: path.join('code', 'styles'),
       searchPrefix: '^app\-module\-',
       lessOptions: {},
       featurePatterns: [
-        'src/*',
-        '!src/style'
+        'code/*',
+        '!code/styles'
       ]
     });
     if(options.brand) brands.push(options.brand);
@@ -99,7 +99,7 @@ module.exports = function(grunt) {
     }, options.featurePatterns);
     features.every(function(featureDir){
       var feature = path.basename(featureDir);
-      var featureBase = path.join(featureDir, 'style');
+      var featureBase = path.join(featureDir, 'styles');
       moduleImports.deps[feature] = {};
       moduleImports.deps[feature].files = _findLess(brands, featureBase, featureDir);
     });
